@@ -17,41 +17,41 @@
 </form>
 <br>
 <!--2 form-->
-<form method="POST">
-    {% csrf_token %}
-    {{ form.title }}
-    {{ form.content }}
-    <input type="submit" value="Submit"/>
-</form>    
+<!--<form method="POST">-->
+<!--    {# csrf_token #}-->
+<!--    {{ form.title }}-->
+<!--    {{ form.content }}-->
+<!--    <input type="submit" value="Submit"/>-->
+<!--</form>    -->
 <br>
 <!--3 form-->
-<form method="POST">
-    {% csrf_token %}
-    {% for field in form %}
-        {{ field.errors }}
-        {{ field.label_tag }} {{ field }}
-    {% endfor %}
-    <input type="submit" value="Submit"/>
-</form>  
-<br>
+<!--<form method="POST">-->
+<!--    {# csrf_token #}-->
+<!--    {# for field in form #}-->
+<!--        {{ field.errors }}-->
+<!--        {{ field.label_tag }} {{ field }}-->
+<!--    {# endfor #}-->
+<!--    <input type="submit" value="Submit"/>-->
+<!--</form>  -->
+<!--<br>-->
 <!--4 form-->
-{{ form.non_field_errors }}
-<form method="POST">
-    {% csrf_token %}
-    <div>
-        {{ form.title.errors }}
-        {{ form.title.label_tag }}
-        {{ form.title }}
-    </div>
-    <div>
-        {{ form.content.errors }}
-        {{ form.content.label_tag }}
-        {{ form.content }}
-    </div>
-    <input type="submit" value="Submit"/>
-</form>
+<!--{{ form.non_field_errors }}-->
+<!--<form method="POST">-->
+<!--    {# csrf_token #}-->
+<!--    <div>-->
+<!--        {{ form.title.errors }}-->
+<!--        {{ form.title.label_tag }}-->
+<!--        {{ form.title }}-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        {{ form.content.errors }}-->
+<!--        {{ form.content.label_tag }}-->
+<!--        {{ form.content }}-->
+<!--    </div>-->
+<!--    <input type="submit" value="Submit"/>-->
+<!--</form>-->
 <!--5 form-->
-{% crispy form %}
+<!--{# crispy form #}-->
 
 
 {% if request.resolver_match.url_name == 'create' %}
