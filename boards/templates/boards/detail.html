@@ -2,14 +2,18 @@
 {% block body %} 
 <h1>{{ board.pk }}번째 글</h1>
 <h2>{{ board.title }}</h2>
+<p><b>작성자 {{ board.user }}</b></p>
 <hr>
 <p>{{ board.content }}</p>
 <hr>
 
 <a href="{% url 'boards:index' %}">[BACK]</a>
+
+{% if user == board.user %}
 <form action="{% url 'boards:delete' board.pk %}" style='display:inline' method="POST">
     {% csrf_token %}
     <input type="submit" value="삭제"/>
 </form>
 <a href="{% url 'boards:update' board.pk %}">[수정]</a>
+{% endif %}
 {% endblock %}
