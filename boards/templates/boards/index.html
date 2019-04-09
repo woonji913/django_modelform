@@ -7,6 +7,7 @@
     <a href="{% url 'accounts:login' %}">새 글을 작성하려면 로그인 하세요.</a>
 {% endif %}
 <hr>
+
 {% for board in boards %}
     <p>{{ board.pk }}</p>
     <p>{{ board.title }}</p>
