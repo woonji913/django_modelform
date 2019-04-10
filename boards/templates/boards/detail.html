@@ -1,5 +1,5 @@
-{% extends 'boards/base.html' %}
-{% block body %} 
+{% extends 'boards/base.html' %} {% block body %}
+{% load crispy_forms_tags %}
 <h2>{{ board.pk }}번째 글</h2>
 <h1>{{ board.title }}</h1>
 <p class="d-flex justify-content-end"><b>작성자 {{ board.user }}</b></p>
@@ -7,13 +7,44 @@
 <p>{{ board.content }}</p>
 <hr>
 
-<a href="{% url 'boards:index' %}">[BACK]</a>
-
-{% if user == board.user %}
+<a href="{% url 'boards:index' %}">[BACK]</a> {% if user == board.user %}
 <form action="{% url 'boards:delete' board.pk %}" style='display:inline' method="POST">
     {% csrf_token %}
-    <input type="submit" value="삭제"/>
+    <input type="submit" value="삭제" />
 </form>
-<a href="{% url 'boards:update' board.pk %}">[수정]</a>
+<a href="{% url 'boards:update' board.pk %}">[수정]</a> {% endif %}
+<hr> 
+
+<!--코멘트 보여주기-->
+{% for comment in board.comment_set.all %}
+<!--{# for comment in comments #}-->
+<div>
+    <b>{{ comment.user }}</b> : {{ comment.content }}
+    
+    {% if user == comment.user %}
+    <form action="{% url 'boards:comment_delete' board.pk comment.pk %}" method="post" style='display:inline' onsubmit="return confirm('R U SURE?');">
+        {% csrf_token %}
+        <input type='submit' value='삭제' />
+    </form>
+    {% endif %}
+</div>
+{% empty %}
+<p><b>댓글이 없어요...</b></p>
+{% endfor %}
+<hr>
+
+<!--코맨트 달기-->
+<p>댓글 작성 / {{ board.comment_set.all | length }}</p>
+
+{% if user.is_authenticated %}
+<form action="{% url 'boards:comment_create' board.pk %}" method='POST'>
+    {% csrf_token %} 
+    {{ comment_form|crispy }}
+    <input type="submit" name="submit" />
+</form>
+{% else %}
+<p>로그인 하셔야 댓글을 달 수 있습니다.<a href="{% url 'accounts:login' %}">[로그인하기]</a></p>
 {% endif %}
+
+
 {% endblock %}

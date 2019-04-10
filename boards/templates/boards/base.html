@@ -16,13 +16,16 @@
     <h1>
         <img src="https://s.gravatar.com/avatar/{{ user.email | makemd5 }}?s=80" alt="profile img"></img>
         안녕, {{ user.username }}
+    </h1>
+    <h4>
+        <a href="{% url 'accounts:profile' user.id %}">[내 프로필]</a>
         <a href="{% url 'accounts:edit' %}">[회원정보수정]</a>
         <a href="{% url 'accounts:logout' %}">[로그아웃]</a>
         <form action="{% url 'accounts:delete' %}" method="POST" style="display:inline" onsubmit="return confirm('R U SURE?');">
             {% csrf_token %}
             <input type="submit" value="회원탈퇴"/>
         </form>
-    </h1>
+    </h4>
     
     {% else %}
     <h1>
@@ -33,6 +36,15 @@
         <hr>
     {% block body %} {% endblock %}
     </div>
+    
+    <!--고양이-->
+    <!--<div class="div" style="position:absolute; right:0; top:0;">-->
+    <!--<marquee direction="up"  height="300" behavior="alternate">-->
+    <!--    <marquee behavior="alternate" >-->
+    <!--        <img src="https://media.giphy.com/media/Kebxw7tA8HgiileQFX/giphy.gif"></img>-->
+    <!--    </marquee>-->
+    <!--</marquee>-->
+    <!--</div>-->
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>

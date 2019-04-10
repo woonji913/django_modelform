@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 # import hashlib
-from .models import Board
-from .forms import BoardForm
+from .models import Board, Comment
+from .forms import BoardForm, CommentForm
 
 # Create your views here.
 def index(request):
@@ -10,7 +11,11 @@ def index(request):
     #     gravatar_url = hashlib.md5(request.user.email.strip().lower().encode('utf-8')).hexdigest()
     # else:
     #     gravatar_url = None
-    boards = Board.objects.order_by('-pk')
+    
+    # 가져올 리스트가 없으면 404 페이지를 불러옴.
+    boards = get_list_or_404(Board.objects.order_by('-pk'))
+    # boards = Board.objects.order_by('-pk')
+    
     context = {
         'boards': boards,
         #'gravatar_url': gravatar_url,
@@ -44,8 +49,12 @@ def create(request):
 def detail(request, board_pk):
     # board = Board.objects.get(pk=board_pk)
     board = get_object_or_404(Board, pk=board_pk)
+    # comments = board.comment_set.all()
+    comment_form = CommentForm()
     context = {
         'board': board,
+        # 'comments':comments,
+        'comment_form': comment_form,
     }
     return render(request, 'boards/detail.html', context)
     
@@ -84,3 +93,38 @@ def update(request, board_pk):
         'board': board,
     }
     return render(request, 'boards/form.html', context)
+
+@require_POST
+@login_required
+def comment_create(request, board_pk):
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.user = request.user
+        comment.board_id = board_pk
+        comment.save()
+    return redirect('boards:detail', board_pk)
+    
+    # board = get_object_or_404(Board, pk=board_pk)
+    # if request.method == 'POST':  # require_POST를 import하면 이 과정이 필요 없어짐.
+    #     form = CommentForm(request.POST)
+    #     if form.is_valid():
+    #         content = request.POST.get('content')
+    #         comment = Comment(board=board, content=content)
+    #         comment.save()
+    #         return redirect('boards:detail', board.pk)
+    # else:
+    #     form = CommentForm()
+    # context = {'form': form,}
+    # return render(request, 'boards/form.html', context)
+
+@require_POST
+@login_required
+def comment_delete(request, board_pk, comment_pk):
+    # comment = Comment.objects.get(pk=comment_pk)
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    # if comment.user == request.user:
+    comment.delete()
+    return redirect('boards:detail', board_pk)
+    # else:
+    #     return redirect('boards:detail', board_pk)

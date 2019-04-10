@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm #UserChangeForm #UserCreationForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import update_session_auth_hash # 비번 변경 시에도 로그인 유지
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model as User
 from .forms import UserCustomChangeForm, UserCustomCreationForm
+
 
 # Create your views here.
 def signup(request):
@@ -72,3 +74,15 @@ def change_password(request):
         form = PasswordChangeForm(request.user)
     context = {'form':form}
     return render(request, 'accounts/auth_form.html', context)
+    
+def profile(request, user_pk):
+    """
+    1. 내가 쓴 모든 글 출력
+    2. 내가 쓴 댓글들 출력
+    3. 작성자를 눌렀을때 프로필로 이동
+    """
+    user = get_object_or_404(User(), pk=user_pk)
+    ctx = {
+        'profile_user': user,
+    }
+    return render(request, 'accounts/profile.html', ctx)

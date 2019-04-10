@@ -1,0 +1,32 @@
+{% extends 'boards/base.html' %}
+{% load gravatar %}
+{% block body %}
+<img src="https://s.gravatar.com/avatar/{{ profile_user.email|makemd5 }}?s=80" alt="profile" />
+<h1>{{ profile_user.username }}</h1>
+{% if user == profile_user %}
+<div>
+    <a href="{% url 'accounts:edit' %}">[회원정보수정]</a>
+    <form action="{% url 'accounts:delete' %}" method="POST" style="display: inline" onsubmit="return confirm('R U SURE??');" >
+       {% csrf_token %}
+       <input type="submit" value="회원탈퇴"/>
+    </form>
+    <a href="{% url 'accounts:change_password' %}">[비밀번호 변경]</a>
+    <a href="{% url 'boards:index' %}">[뒤로가기]</a>
+</div>
+{% endif %}
+<hr>
+
+<h2>{{ profile_user.username }}의 글목록</h2>
+{% for board in profile_user.board_set.all %}
+<p>제목 : <a href="{% url 'boards:detail' board.id %}">{{ board.title }}</a></p>
+<p>내용 : {{ board.content }}</p>
+<p>달린 댓글 수 : {{ board.comment_set.count }}</p>
+<hr>
+{% endfor %}
+<hr>
+<h2>{{ profile_user.username }}의 댓글목록</h2>
+{% for comment in profile_user.comment_set.all %}
+<p><a href="{% url 'boards:detail' comment.board.id %}">'{{ comment.board }}'</a>글의 댓글 / {{ comment.content }}</p>
+<hr>
+{% endfor %}
+{% endblock %}
