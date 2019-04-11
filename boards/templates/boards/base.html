@@ -8,32 +8,47 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <title>Document</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css?family=Do+Hyeon|Gaegu|Nanum+Myeongjo|Yeon+Sung');
+    </style>
 </head>
 
 <body>
-    <div class="container">
-    {% if user.is_authenticated %}
-    <h1>
-        <img src="https://s.gravatar.com/avatar/{{ user.email | makemd5 }}?s=80" alt="profile img"></img>
-        안녕, {{ user.username }}
-    </h1>
-    <h4>
-        <a href="{% url 'accounts:profile' user.id %}">[내 프로필]</a>
-        <a href="{% url 'accounts:edit' %}">[회원정보수정]</a>
-        <a href="{% url 'accounts:logout' %}">[로그아웃]</a>
-        <form action="{% url 'accounts:delete' %}" method="POST" style="display:inline" onsubmit="return confirm('R U SURE?');">
-            {% csrf_token %}
-            <input type="submit" value="회원탈퇴"/>
-        </form>
-    </h4>
-    
-    {% else %}
-    <h1>
-        <a href="{% url 'accounts:login' %}">[로그인]</a>
-        <a href="{% url 'accounts:signup' %}">[회원가입]</a>
-    </h1>
-    {% endif %}
+    <div class="container mt-3">
+        {% if user.is_authenticated %}
+        <div class="container d-flex align-self-center" style="font-family: 'Yeon Sung', cursive;">
+            <h1 style="display: inline">
+                <img class="rounded-circle" src="https://s.gravatar.com/avatar/{{ user.email | makemd5 }}?s=80" alt="profile img"></img>
+                안녕하세요, {{ user.username }}님
+            </h1>
+            <!--<p>안녕, {{ user.username }}</p>-->
+            <div class="btn-group mt-3 mx-3" style="display: inline">
+              <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                설정
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'accounts:profile' user.id %}">프로필 조회</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'accounts:logout' %}">로그아웃</a>
+              </div>
+            </div>
+        </div>
+        {% else %}
+        
+        <!--<h1>-->
+        <!--    <a href="{# url 'accounts:login' #}">[로그인]</a>-->
+        <!--    <a href="{# url 'accounts:signup' #}">[회원가입]</a>-->
+        <!--</h1>-->
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <h1>
+            <a type="button" class="btn btn-warning" href="{% url 'accounts:login' %}">로그인</a>
+            <a type="button" class="btn btn-warning" href="{% url 'accounts:signup' %}">회원가입</a>
+            </h1>
+        </div>
+        {% endif %}
+        
         <hr>
+        
     {% block body %} {% endblock %}
     </div>
     

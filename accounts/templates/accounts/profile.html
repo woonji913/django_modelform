@@ -1,32 +1,88 @@
-{% extends 'boards/base.html' %}
-{% load gravatar %}
-{% block body %}
-<img src="https://s.gravatar.com/avatar/{{ profile_user.email|makemd5 }}?s=80" alt="profile" />
-<h1>{{ profile_user.username }}</h1>
-{% if user == profile_user %}
-<div>
-    <a href="{% url 'accounts:edit' %}">[회원정보수정]</a>
-    <form action="{% url 'accounts:delete' %}" method="POST" style="display: inline" onsubmit="return confirm('R U SURE??');" >
-       {% csrf_token %}
-       <input type="submit" value="회원탈퇴"/>
-    </form>
-    <a href="{% url 'accounts:change_password' %}">[비밀번호 변경]</a>
-    <a href="{% url 'boards:index' %}">[뒤로가기]</a>
-</div>
-{% endif %}
-<hr>
+{% extends 'accounts/base.html' %} 
+{% block body %} 
 
-<h2>{{ profile_user.username }}의 글목록</h2>
+{% load gravatar %}
+<div class="container d-flex mt-5">
+    <!--프로필 이미지-->
+    <div class="mx-5">
+        <img src="https://s.gravatar.com/avatar/{{ profile_user.email|makemd5 }}?s=150" class="rounded-circle" alt="profile" />
+    </div>
+    <!--프로필 유저 이름-->
+    <div class="mt-3">
+        <div class="container">
+            <div class="row">
+                <h1 style="font-family: 'Yeon Sung', cursive;">{{ profile_user.username }}</h1>
+                
+                {% if user == profile_user %}
+    <!--설정-->
+                <div class="btn-group mt-2 mx-5" style="display: inline">
+                  <button type="button" class="btn btn-warning dropdown-toggle" style="font-family: 'Yeon Sung', cursive;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    설정
+                  </button>
+                  <div class="dropdown-menu" style="font-family: 'Yeon Sung', cursive;">
+                    <a class="dropdown-item" href="{% url 'accounts:edit' %}">[회원정보수정]</a>
+                    <a class="dropdown-item" href="{% url 'accounts:change_password' %}">[비밀번호 변경]</a>
+                    <a class="dropdown-item" href="{% url 'accounts:logout' %}">[로그아웃]</a>
+                    <div class="dropdown-divider"></div>
+                    <form class="dropdown-item" action="{% url 'accounts:delete' %}" method="POST" style="display: inline" onsubmit="return confirm('R U SURE??');">
+                        {% csrf_token %}
+                        <input type="submit" value="회원탈퇴" />
+                    </form>
+                  </div>
+                </div>
+                
+                {% endif %}
+            </div>
+        </div>   
+        
+    <!--이메일 정보-->
+        <h4 style="font-family: 'Yeon Sung', cursive;">E-mail 주소 : {{ profile_user.email }}</h4>
+    <!--게시글 수, 댓글 수-->
+    <h5 style="font-family: 'Yeon Sung', cursive;">게시글 수 : {{ profile_user.board_set.all | length }},  댓글 수 : {{ profile_user.comment_set.all | length }}</h5>
+    </div>
+    <hr>
+</div>
+<br>
+<br>
+
+<!--글 목록-->
+<h2 style="font-family: 'Nanum Myeongjo', serif;"><b>{{ profile_user.username }}의 글목록</b></h2>
+<br>
+<div class="container" style="font-family: 'Yeon Sung', cursive;">
+    <div class="row">
 {% for board in profile_user.board_set.all %}
-<p>제목 : <a href="{% url 'boards:detail' board.id %}">{{ board.title }}</a></p>
-<p>내용 : {{ board.content }}</p>
-<p>달린 댓글 수 : {{ board.comment_set.count }}</p>
-<hr>
+        <div class="card col-4" style="width: 18rem;">
+            <img src="http://t1.daumcdn.net/liveboard/petxlab/a599fae28cfa423baecba6e1ffb24674.gif" class="card-img-top mt-3" alt="cat">
+            <div class="card-body">
+                <h3 class="card-title">제목 : <b>{{ board.title }}</b></h3>
+                <h5 class="card-text">내용 : {{ board.content }}</h5>
+                <p>달린 댓글 수 : {{ board.comment_set.count }}</p>
+                <a href="{% url 'boards:detail' board.id %}" class="card-link">[글 보러가기]</a>
+            </div>
+        </div>
 {% endfor %}
-<hr>
-<h2>{{ profile_user.username }}의 댓글목록</h2>
+    </div>
+</div>
+
+<!--{# for board in profile_user.board_set.all #}-->
+<!--    <p>제목 : <a href="{# url 'boards:detail' board.id #}">{{ board.title }}</a></p>-->
+<!--    <p>내용 : {{ board.content }}</p>-->
+<!--    <p>달린 댓글 수 : {{ board.comment_set.count }}</p>-->
+<!--    <hr> -->
+<!--{# endfor #}-->
+<br>
+<br>
+
+
+<!--댓글 목록-->
+<h2 style="font-family: 'Nanum Myeongjo', serif;"><b>{{ profile_user.username }}의 댓글목록</b></h2>
+<br>
 {% for comment in profile_user.comment_set.all %}
-<p><a href="{% url 'boards:detail' comment.board.id %}">'{{ comment.board }}'</a>글의 댓글 / {{ comment.content }}</p>
-<hr>
+    <h4 style="font-family: 'Yeon Sung', cursive;">[<a href="{% url 'boards:detail' comment.board.id %}">'{{ comment.board }}'</a>글의 댓글] : {{ comment.content }}</h4>
+    <hr> 
 {% endfor %}
+
+<div class="d-flex justify-content-end">
+    <a href="{% url 'boards:index' %}" type="button" class="btn btn-primary">[뒤로가기]</a>
+</div>
 {% endblock %}

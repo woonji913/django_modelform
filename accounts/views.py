@@ -3,8 +3,8 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm #Us
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import update_session_auth_hash # 비번 변경 시에도 로그인 유지
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model as User
+from django.contrib.auth.decorators import login_required
 from .forms import UserCustomChangeForm, UserCustomCreationForm
 
 
